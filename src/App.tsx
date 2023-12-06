@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import List from './components/list/List';
+import PaginatedList from './components/paginated/PaginatedList';
 
-function App() {
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem;
+`;
+
+const App: React.FC = () => {
+  const [data] = useState([...Array(100).keys()].map(i => `Item ${i + 1}`));
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <AppContainer>
+
+      <List data={data} />
+
+      <hr />
+
+      <PaginatedList data={data} currentPage={currentPage} />
+
+      <div>
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          Previous Page
+        </button>
+        <span> Page {currentPage} </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === Math.ceil(data.length / 10)}
+        >
+          Next Page
+        </button>
+      </div>
+    </AppContainer>
   );
-}
+};
 
 export default App;
+
+//já aqui e nos styles.ts, optei pelo uso do styledComponents, pois ele possui 3 pontos muito fortes na minha opinião, que seria encapsulação de estilos, facilidade de manutenção e estilos dinâmicos e temas
